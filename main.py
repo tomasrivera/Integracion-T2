@@ -76,4 +76,4 @@ api.add_resource(ArtistId, '/artists/<string:artist_id>')
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0")
+    app.run(debug=True, host="0.0.0.0", port=8080)
