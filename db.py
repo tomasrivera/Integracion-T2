@@ -1,10 +1,21 @@
 from pony import orm
 from pony.orm.serialization import to_dict, to_json
 from utils import artist_mapper, get_id
+from os import environ
+import re
 
 
+
+DB_URL = environ["DATABASE_URL"][11:]
+DB_URL.index(":")
+user = DB_URL[:DB_URL.index(":")]
+DB_URL = DB_URL[DB_URL.index(":")+1:]
+password = DB_URL[:DB_URL.index("@")]
+DB_URL = DB_URL[DB_URL.index("@")+1:]
+host = DB_URL[:DB_URL.index("/")]
+database = DB_URL[DB_URL.index("/")+1:]
 db = orm.Database()
-db.bind(provider='postgres', user='db_admin', password='pwd0123456789', host='localhost', database='db_postgre')
+db.bind(provider='postgres', user=user, password=password, host=host, database=database)
 
 class Artist(db.Entity):
     id = orm.PrimaryKey(str)

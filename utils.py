@@ -3,13 +3,13 @@ from os import environ
 
 
 def artist_albums_url(id):
-    return f"{environ["API_URL"]}/artists/{id}/albums"
+    return f"{environ['API_URL']}/artists/{id}/albums"
 
 def artist_tracks_url(id):
-    return f"{environ["API_URL"]}/artists/{id}/tracks"
+    return f"{environ['API_URL']}/artists/{id}/tracks"
 
 def artist_url(id):
-    return f"{environ["API_URL"]}/artists/{id}"
+    return f"{environ['API_URL']}/artists/{id}"
 
 
 def artist_mapper(artist):
