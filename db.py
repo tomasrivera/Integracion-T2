@@ -12,10 +12,13 @@ user = DB_URL[:DB_URL.index(":")]
 DB_URL = DB_URL[DB_URL.index(":")+1:]
 password = DB_URL[:DB_URL.index("@")]
 DB_URL = DB_URL[DB_URL.index("@")+1:]
-host = DB_URL[:DB_URL.index("/")]
+print(DB_URL)
+host = DB_URL[:DB_URL.index(":")]
+DB_URL = DB_URL[DB_URL.index(":")+1:]
+port = DB_URL[:DB_URL.index("/")]
 database = DB_URL[DB_URL.index("/")+1:]
 db = orm.Database()
-db.bind(provider='postgres', user=user, password=password, host=host, database=database)
+db.bind(provider='postgres', user=user, password=password, host=host, port=port, database=database)
 
 class Artist(db.Entity):
     id = orm.PrimaryKey(str)
