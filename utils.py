@@ -11,6 +11,12 @@ def artist_tracks_url(id):
 def artist_url(id):
     return f"{environ['API_URL']}/artists/{id}"
 
+def album_url(id):
+    return f"{environ['API_URL']}/albums/{id}"
+
+def album_tracks_url(id):
+    return f"{environ['API_URL']}/albums/{id}/tracks"
+
 
 def artist_mapper(artist):
     return {
@@ -20,6 +26,18 @@ def artist_mapper(artist):
         "albums": artist_albums_url(artist.id),
         "tracks": artist_tracks_url(artist.id),
         "self": artist_url(artist.id)
+    }
+
+def album_mapper(album):
+    # print(album.artist.id)
+    return {
+        "id": album.id,
+        "artist_id": album.artist.id,
+        "name": album.name,
+        "genre": album.genre,
+        "artist": artist_url(album.artist.id),
+        "tracks": album_tracks_url(album.id),
+        "self": album_url(album.id)
     }
 
 def get_id(name):

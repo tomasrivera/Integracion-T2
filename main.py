@@ -1,7 +1,7 @@
 from flask import Flask, g, make_response
 from flask_restful import Resource, Api, reqparse
 from pony import orm
-from db import get_artists, delete_artist, add_artist, get_artist
+from db import get_artists, delete_artist, add_artist, get_artist, get_albums, add_album, get_artist_albums
 from os import environ
 import json
 
@@ -25,6 +25,10 @@ api = Api(app)
 artist_parser = reqparse.RequestParser()
 artist_parser.add_argument('name')
 artist_parser.add_argument('age')
+
+album_parser = reqparse.RequestParser()
+album_parser.add_argument('name')
+album_parser.add_argument('genre')
 
 class Artists(Resource):
     def get(self):
@@ -71,8 +75,47 @@ class ArtistId(Resource):
             return {}, 404
 
 
+class Albums(Resource):
+    def get(self):
+        try:
+            albums = get_albums()
+            return albums
+        except Exception as err:
+            print(err)
+            return []
+
+class ArtistAlbums(Resource):
+    def get(self, artist_id):
+        try:
+            return get_artist_albums(artist_id)
+        except Exception as err:
+            print(err)
+            return {}, 404
+
+    def post(self, artist_id):
+        args = album_parser.parse_args()
+        print(args)
+        try:
+            if not args.name or not args.genre:
+                return {}, 400
+            print("ok")
+            album, err = add_album(artist_id, args.name, args.genre)
+            print("ok", album, err)
+            if err == 1:
+                return {}, 422
+            elif err == 2:
+                return album, 409
+            return album, 201
+        except Exception as err:
+            print(err)
+            return {}, 400
+
+    
+
 api.add_resource(Artists, '/artists')
 api.add_resource(ArtistId, '/artists/<string:artist_id>')
+api.add_resource(Albums, '/albums')
+api.add_resource(ArtistAlbums, '/artists/<string:artist_id>/albums')
 
 
 if __name__ == '__main__':

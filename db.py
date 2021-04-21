@@ -1,6 +1,6 @@
 from pony import orm
 from pony.orm.serialization import to_dict, to_json
-from utils import artist_mapper, get_id
+from utils import artist_mapper, album_mapper, get_id
 from os import environ
 import re
 
@@ -67,6 +67,32 @@ def get_artist(id):
 @orm.db_session
 def delete_artist(id):
     Artist[id].delete()
+
+@orm.db_session
+def get_albums():
+    albums = orm.select(p for p in Album)[:]
+    return [album_mapper(album) for album in albums]
+
+@orm.db_session
+def get_artist_albums(artist_id):
+    return [album_mapper(album) for album in Artist[artist_id].albums]
+    # return [album_mapper(album) for album in albums]
+
+@orm.db_session
+def add_album(artist_id, name, genre):
+    print(artist_id, name, genre)
+    try:
+        if not Artist.exists(id=artist_id):
+            return {}, 1
+        else:
+            artist = Artist[artist_id]
+        if Album.exists(id=get_id(name)):
+            return album_mapper(Album[get_id(name)]), 2
+        album = Album(id=get_id(name) ,name=name, genre=genre, artist=artist)
+        return album_mapper(album), 0
+    except Exception as err:
+        return {}, err
+
 
 if __name__ == '__main__':
     
