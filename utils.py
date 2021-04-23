@@ -50,10 +50,15 @@ def track_mapper(track):
         "album_id": track.album.id,
         "name": track.name,
         "duration": track.duration,
+        "times_played": track.t_played,
         "artist": artist_url(track.album.artist.id),
         "album": album_url(track.album.id),
         "self": track_url(track.id)
     }
 
-def get_id(name):
+def get_id(name, artist_id=None, album_id=None):
+    if artist_id:
+        name += f":{artist_id}"
+    elif album_id:
+        name += f":{album_id}"
     return b64encode(name.encode()).decode('utf-8')[:22]

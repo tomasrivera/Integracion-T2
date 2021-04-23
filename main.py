@@ -1,7 +1,7 @@
 from flask import Flask, g, make_response
 from flask_restful import Resource, Api, reqparse
 from pony import orm
-from db import get_artists, delete_artist, add_artist, get_artist, get_albums, add_album, get_artist_albums, get_album, delete_album, add_track, get_tracks, delete_track
+from db import get_artists, delete_artist, add_artist, get_artist, get_albums, add_album, get_artist_albums, get_album, delete_album, add_track, get_tracks, delete_track, play_tracks
 from os import environ
 import json
 
@@ -190,6 +190,14 @@ class ArtistTracks(Resource):
         except Exception as err:
             print(err)
             return {}, 404
+
+class PlayTrack(Resource):
+    def put(self, track_id):
+        try:
+            return play_tracks(track_id)
+        except Exception as err:
+            print(err)
+            return {}, 404
     
 
 api.add_resource(Artists, '/artists')
@@ -201,6 +209,7 @@ api.add_resource(AlbumTracks, '/albums/<string:album_id>/tracks')
 api.add_resource(Tracks, '/tracks')
 api.add_resource(TrackId, '/tracks/<string:track_id>')
 api.add_resource(ArtistTracks, '/artists/<string:artist_id>/tracks')
+api.add_resource(PlayTrack, '/tracks/<string:track_id>/play')
 
 
 if __name__ == '__main__':

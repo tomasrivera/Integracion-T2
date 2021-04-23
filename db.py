@@ -86,9 +86,9 @@ def add_album(artist_id, name, genre):
             return {}, 1
         else:
             artist = Artist[artist_id]
-        if Album.exists(id=get_id(name)):
-            return album_mapper(Album[get_id(name)]), 2
-        album = Album(id=get_id(name) ,name=name, genre=genre, artist=artist)
+        if Album.exists(id=get_id(name, artist_id=artist_id)):
+            return album_mapper(Album[get_id(name, artist_id=artist_id)]), 2
+        album = Album(id=get_id(name, artist_id=artist_id) ,name=name, genre=genre, artist=artist)
         return album_mapper(album), 0
     except Exception as err:
         return {}, err
@@ -121,9 +121,9 @@ def add_track(album_id, name, duration):
         else:
             album = Album[album_id]
         print("ok")
-        if Track.exists(id=get_id(name)):
-            return track_mapper(Track[get_id(name)]), 2
-        track = Track(id=get_id(name) ,name=name, duration=duration, album=album, artist=album.artist, t_played=0)
+        if Track.exists(id=get_id(name, album_id=album_id)):
+            return track_mapper(Track[get_id(name, album_id=album_id)]), 2
+        track = Track(id=get_id(name, album_id=album_id) ,name=name, duration=duration, album=album, artist=album.artist, t_played=0)
         return track_mapper(track), 0
     except Exception as err:
         return {}, err
@@ -131,6 +131,10 @@ def add_track(album_id, name, duration):
 @orm.db_session
 def delete_track(id):
     Track[id].delete()
+
+@orm.db_session
+def play_tracks(id):
+    Track[id].t_played += 1 
 
 
 if __name__ == '__main__':
