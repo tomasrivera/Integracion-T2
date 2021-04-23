@@ -1,6 +1,6 @@
 from pony import orm
 from pony.orm.serialization import to_dict, to_json
-from utils import artist_mapper, album_mapper, get_id
+from utils import artist_mapper, album_mapper, track_mapper, get_id
 from os import environ
 import re
 
@@ -93,10 +93,46 @@ def add_album(artist_id, name, genre):
     except Exception as err:
         return {}, err
 
+@orm.db_session
+def get_album(id):
+    return album_mapper(Album[id])
+
+@orm.db_session
+def delete_album(id):
+    Album[id].delete()
+
+@orm.db_session
+def get_tracks(artist_id=None, album_id=None, track_id=None):
+    if artist_id:
+        return [track_mapper(track) for track in Artist[artist_id].tracks]
+    elif album_id:
+        return [track_mapper(track) for track in Album[album_id].tracks]
+    elif track_id:
+        return track_mapper(Track[track_id])
+    tracks = orm.select(p for p in Track)[:]
+    return [track_mapper(track) for track in tracks]
+
+@orm.db_session
+def add_track(album_id, name, duration):
+    print(album_id, name, duration)
+    try:
+        if not Album.exists(id=album_id):
+            return {}, 1
+        else:
+            album = Album[album_id]
+        print("ok")
+        if Track.exists(id=get_id(name)):
+            return track_mapper(Track[get_id(name)]), 2
+        track = Track(id=get_id(name) ,name=name, duration=duration, album=album, artist=album.artist, t_played=0)
+        return track_mapper(track), 0
+    except Exception as err:
+        return {}, err
+
+@orm.db_session
+def delete_track(id):
+    Track[id].delete()
+
 
 if __name__ == '__main__':
     
-    # add_artist(id="3232iii3", name="Test4", age=10, albums="aaa", tracks="aaa", self_="aaa")
-    # print_artist_names()
-    # delete_artist("124")
-    print_artist_names()
+    pass
