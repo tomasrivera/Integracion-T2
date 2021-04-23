@@ -194,7 +194,23 @@ class ArtistTracks(Resource):
 class PlayTrack(Resource):
     def put(self, track_id):
         try:
-            return play_tracks(track_id)
+            return play_tracks(id=track_id)
+        except Exception as err:
+            print(err)
+            return {}, 404
+
+class PlayAlbumTracks(Resource):
+    def put(self, album_id):
+        try:
+            return play_tracks(album_id=album_id)
+        except Exception as err:
+            print(err)
+            return {}, 404
+
+class PlayArtistTracks(Resource):
+    def put(self, artist_id):
+        try:
+            return play_tracks(artist_id=artist_id)
         except Exception as err:
             print(err)
             return {}, 404
@@ -210,6 +226,8 @@ api.add_resource(Tracks, '/tracks')
 api.add_resource(TrackId, '/tracks/<string:track_id>')
 api.add_resource(ArtistTracks, '/artists/<string:artist_id>/tracks')
 api.add_resource(PlayTrack, '/tracks/<string:track_id>/play')
+api.add_resource(PlayArtistTracks, '/artists/<string:artist_id>/albums/play')
+api.add_resource(PlayAlbumTracks, '/albums/<string:album_id>/tracks/play')
 
 
 if __name__ == '__main__':

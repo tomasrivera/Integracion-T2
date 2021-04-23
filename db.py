@@ -133,8 +133,15 @@ def delete_track(id):
     Track[id].delete()
 
 @orm.db_session
-def play_tracks(id):
-    Track[id].t_played += 1 
+def play_tracks(id=None, album_id=None, artist_id=None):
+    if id:
+        Track[id].t_played += 1
+    elif album_id:
+        for track in Album[album_id].tracks:
+            track.t_played += 1
+    elif artist_id:
+        for track in Artist[artist_id].tracks:
+            track.t_played += 1
 
 
 if __name__ == '__main__':
